@@ -12,6 +12,7 @@ import 'package:mock/mock.dart';
 import 'package:route_hierarchical/client.dart';
 
 import 'util/mocks.dart';
+import 'package:route_hierarchical/src/common.dart';
 
 main() {
   unittestConfiguration.timeout = new Duration(seconds: 1);

@@ -1,4 +1,4 @@
-part of route.client;
+part of route.route;
 
 /**
  * A helper Router handle that scopes all route event subscriptions to it's
@@ -29,7 +29,7 @@ class RouteHandle implements Route {
   StreamSubscription _onLeaveSubscription;
   List<RouteHandle> _childHandles = <RouteHandle>[];
 
-  RouteHandle._new(this._route)
+  RouteHandle(this._route)
       : _onEnterController =
             new StreamController<RouteEnterEvent>.broadcast(sync: true),
         _onPreEnterController =
@@ -79,7 +79,7 @@ class RouteHandle implements Route {
 
   @override
   Route findRoute(String routePath) {
-    Route r = _assertState(() => _getHost(_route).findRoute(routePath));
+    Route r = _assertState(() => getHost(_route).findRoute(routePath));
     if (r == null) return null;
     var handle = r.newHandle();
     if (handle != null) _childHandles.add(handle);
@@ -92,15 +92,15 @@ class RouteHandle implements Route {
   @override
   RouteHandle newHandle() {
     _logger.finest('newHandle for $this');
-    return new RouteHandle._new(_getHost(_route));
+    return new RouteHandle(getHost(_route));
   }
 
-  Route _getHost(Route r) {
+  Route getHost(Route r) {
     _assertState();
     if (r == null) throw new StateError('Oops?!');
     if ((r is Route) && (r is! RouteHandle)) return r;
     RouteHandle rh = r;
-    return rh._getHost(rh._route);
+    return rh.getHost(rh._route);
   }
 
   dynamic _assertState([f()]) {
