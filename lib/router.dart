@@ -610,6 +610,26 @@ class IndependentRouter {
     return route(reloadPath, startingFrom: startingFrom, forceReload: true);
   }
 
+  /// Navigates to a given relative route path, and parameters.
+  Future<bool> go(String routePath, Map parameters, {Route startingFrom,
+  bool replace: false, Map queryParameters, bool forceReload: false}) {
+    RouteImpl baseRoute = startingFrom == null ? root : dehandle(startingFrom);
+    var routeToGo = findRouteFromBase(baseRoute, routePath);
+    var newTail = baseRoute.getTailUrl(routeToGo, parameters) +
+        buildQuery(queryParameters);
+    String newUrl = baseRoute.getHead(newTail);
+    _logger.finest('go $newUrl');
+    return route(newTail, startingFrom: baseRoute, forceReload: forceReload)
+        .then((success) {
+      if (success) {
+        /* only for browser
+        _go(newUrl, routeToGo.pageTitle, replace);
+        */
+      }
+      return success;
+    });
+  }
+
   /// Returns an absolute URL for a given relative route path and parameters.
   String url(String routePath,
       {Route startingFrom, Map parameters, Map queryParameters}) {
